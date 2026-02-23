@@ -43,11 +43,11 @@ jobs:
       # For production releases, add secrets: KEYSTORE_BASE64, KEYSTORE_PASSWORD, KEY_ALIAS, KEY_PASSWORD
       # and replace this step with one that decodes the keystore and writes keystore.properties from secrets.
       - name: Create CI keystore and properties
-        working-directory: android
         run: |
+          # Create keystore in android/app/ directory
           keytool -genkeypair -v \
             -storetype PKCS12 \
-            -keystore ci-release.keystore \
+            -keystore android/app/ci-release.keystore \
             -alias ci \
             -keyalg RSA \
             -keysize 2048 \
@@ -55,10 +55,11 @@ jobs:
             -storepass ci-store-pass \
             -keypass ci-key-pass \
             -dname "CN=CI, OU=CI, O=CI, L=CI, S=CI, C=US"
-          echo "storeFile=ci-release.keystore" > keystore.properties
-          echo "storePassword=ci-store-pass" >> keystore.properties
-          echo "keyAlias=ci" >> keystore.properties
-          echo "keyPassword=ci-key-pass" >> keystore.properties
+          # Create keystore.properties in android/ directory (rootProject)
+          echo "storeFile=ci-release.keystore" > android/keystore.properties
+          echo "storePassword=ci-store-pass" >> android/keystore.properties
+          echo "keyAlias=ci" >> android/keystore.properties
+          echo "keyPassword=ci-key-pass" >> android/keystore.properties
 
       - name: Build release APK
         # working-directory: android
