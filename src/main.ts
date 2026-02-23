@@ -26,6 +26,7 @@ import {
   cloudOutline,
   serverOutline,
   syncOutline,
+  searchOutline,
 } from 'ionicons/icons';
 
 import { routes } from './app/app.routes';
@@ -55,6 +56,7 @@ addIcons({
   'cloud-outline': cloudOutline,
   'server-outline': serverOutline,
   'sync-outline': syncOutline,
+  'search-outline': searchOutline,
 });
 
 bootstrapApplication(AppComponent, {

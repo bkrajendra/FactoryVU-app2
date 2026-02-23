@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonIcon, IonButton, IonButtons } from '@ionic/angular/standalone';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonIcon, IonButton, IonButtons, IonSearchbar } from '@ionic/angular/standalone';
 import { MdnsDevice } from 'capacitor-mdns-discovery';
 import { DiscoveryService } from '../services/discovery';
 import { CloudDevicesService } from '../services/cloud-devices.service';
@@ -21,6 +21,7 @@ import { Subscription, combineLatest } from 'rxjs';
     IonIcon,
     IonButton,
     IonButtons,
+    IonSearchbar,
   ],
 })
 export class Tab2Page implements OnInit, OnDestroy {
@@ -28,6 +29,7 @@ export class Tab2Page implements OnInit, OnDestroy {
   loading = false;
   scanning = false;
   error: string | null = null;
+  searchTerm = '';
   private subs: Subscription[] = [];
 
   constructor(
@@ -120,5 +122,19 @@ export class Tab2Page implements OnInit, OnDestroy {
 
   goToDevice(device: UnifiedDevice) {
     this.router.navigate(['/device', device.id]);
+  }
+
+  onSearchChange(event: CustomEvent) {
+    this.searchTerm = (event.detail.value ?? '').toLowerCase().trim();
+  }
+
+  get filteredDevices(): UnifiedDevice[] {
+    if (!this.searchTerm) {
+      return this.devices;
+    }
+    return this.devices.filter(d =>
+      d.id.toLowerCase().includes(this.searchTerm) ||
+      (d.name && d.name.toLowerCase().includes(this.searchTerm))
+    );
   }
 }

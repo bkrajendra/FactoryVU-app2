@@ -15,6 +15,14 @@
 
 <ion-content [fullscreen]="true">
   <div class="devices-content">
+    <div class="search-container" *ngIf="devices.length > 0">
+      <ion-searchbar
+        placeholder="Search by device ID or name"
+        [debounce]="250"
+        (ionInput)="onSearchChange($any($event))"
+        mode="ios"></ion-searchbar>
+    </div>
+
     <div class="error-banner" *ngIf="error">
       <ion-icon name="warning-outline"></ion-icon>
       {{ error }}
@@ -25,14 +33,14 @@
       Loading from cloud…
     </div>
 
-    <div class="device-list" *ngIf="!loading && devices.length > 0">
+    <div class="device-list" *ngIf="!loading && filteredDevices.length > 0">
       <div class="section-header">
-        <span>All devices</span>
-        <span class="count-badge">{{ devices.length }}</span>
+        <span>{{ searchTerm ? 'Search results' : 'All devices' }}</span>
+        <span class="count-badge">{{ filteredDevices.length }}<span *ngIf="searchTerm"> / {{ devices.length }}</span></span>
       </div>
       <div
         class="device-card"
-        *ngFor="let device of devices; trackBy: trackById"
+        *ngFor="let device of filteredDevices; trackBy: trackById"
         (click)="goToDevice(device)">
         <div class="card-body">
           <div class="device-name">{{ device.name || device.id }}</div>
@@ -55,6 +63,12 @@
       <ion-icon name="cube-outline" class="empty-icon"></ion-icon>
       <p>No devices yet</p>
       <small>Pull to refresh cloud list or tap Scan to discover devices on your network.</small>
+    </div>
+
+    <div class="empty" *ngIf="!loading && devices.length > 0 && filteredDevices.length === 0">
+      <ion-icon name="search-outline" class="empty-icon"></ion-icon>
+      <p>No matching devices</p>
+      <small>No devices found matching "{{ searchTerm }}"</small>
     </div>
   </div>
 </ion-content>
