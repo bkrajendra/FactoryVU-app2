@@ -16,6 +16,16 @@ import {
   cubeOutline,
   stopCircle,
   wifiOutline,
+  thermometerOutline,
+  waterOutline,
+  arrowBackOutline,
+  chevronBackOutline,
+  chevronForwardOutline,
+  analyticsOutline,
+  timeOutline,
+  cloudOutline,
+  serverOutline,
+  syncOutline,
 } from 'ionicons/icons';
 
 import { routes } from './app/app.routes';
@@ -35,6 +45,16 @@ addIcons({
   'cube-outline': cubeOutline,
   'stop-circle': stopCircle,
   'wifi-outline': wifiOutline,
+  'thermometer-outline': thermometerOutline,
+  'water-outline': waterOutline,
+  'arrow-back-outline': arrowBackOutline,
+  'chevron-back-outline': chevronBackOutline,
+  'chevron-forward-outline': chevronForwardOutline,
+  'analytics-outline': analyticsOutline,
+  'time-outline': timeOutline,
+  'cloud-outline': cloudOutline,
+  'server-outline': serverOutline,
+  'sync-outline': syncOutline,
 });
 
 bootstrapApplication(AppComponent, {

@@ -32,7 +32,8 @@
       </div>
       <div
         class="device-card"
-        *ngFor="let device of devices; trackBy: trackById">
+        *ngFor="let device of devices; trackBy: trackById"
+        (click)="goToDevice(device)">
         <div class="card-body">
           <div class="device-name">{{ device.name || device.id }}</div>
           <div class="device-meta">
@@ -46,6 +47,7 @@
             <span class="tag local-addr" *ngIf="device.localAddress">{{ device.localAddress }}</span>
           </div>
         </div>
+        <ion-icon name="chevron-forward-outline" class="chevron"></ion-icon>
       </div>
     </div>
 

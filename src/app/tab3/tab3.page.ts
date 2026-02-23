@@ -13,6 +13,7 @@ import {
   IonInput,
   IonButton,
   IonText,
+  IonItemDivider,
 } from '@ionic/angular/standalone';
 import { SettingsService } from '../services/settings.service';
 
@@ -34,6 +35,7 @@ import { SettingsService } from '../services/settings.service';
     IonInput,
     IonButton,
     IonText,
+    IonItemDivider,
   ],
 })
 export class Tab3Page implements OnInit {
@@ -44,10 +46,24 @@ export class Tab3Page implements OnInit {
   saveMessage = '';
   hasUnsavedChanges = false;
 
+  tempUpper = 35;
+  tempLower = 15;
+  humidityUpper = 80;
+  humidityLower = 30;
+  updateIntervalInput = 5;
+  thresholdMessage = '';
+  hasUnsavedThresholds = false;
+
   constructor(private settings: SettingsService) {}
 
   ngOnInit() {
     this.apiKeyInput = this.settings.apiKey;
+    const thresholds = this.settings.thresholds;
+    this.tempUpper = thresholds.tempUpper;
+    this.tempLower = thresholds.tempLower;
+    this.humidityUpper = thresholds.humidityUpper;
+    this.humidityLower = thresholds.humidityLower;
+    this.updateIntervalInput = this.settings.updateInterval;
   }
 
   onApiKeyInput(value: string) {
@@ -69,5 +85,27 @@ export class Tab3Page implements OnInit {
 
   setEmail(enabled: boolean) {
     this.settings.setNotificationEmail(enabled);
+  }
+
+  onThresholdChange() {
+    const current = this.settings.thresholds;
+    this.hasUnsavedThresholds =
+      this.tempUpper !== current.tempUpper ||
+      this.tempLower !== current.tempLower ||
+      this.humidityUpper !== current.humidityUpper ||
+      this.humidityLower !== current.humidityLower ||
+      this.updateIntervalInput !== this.settings.updateInterval;
+    this.thresholdMessage = '';
+  }
+
+  saveThresholds() {
+    this.settings.setTempUpper(this.tempUpper);
+    this.settings.setTempLower(this.tempLower);
+    this.settings.setHumidityUpper(this.humidityUpper);
+    this.settings.setHumidityLower(this.humidityLower);
+    this.settings.setUpdateInterval(this.updateIntervalInput);
+    this.hasUnsavedThresholds = false;
+    this.thresholdMessage = 'Settings saved successfully';
+    setTimeout(() => (this.thresholdMessage = ''), 3000);
   }
 }

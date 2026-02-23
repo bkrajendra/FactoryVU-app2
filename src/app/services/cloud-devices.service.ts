@@ -6,11 +6,13 @@ import { SettingsService } from './settings.service';
 
 @Injectable({ providedIn: 'root' })
 export class CloudDevicesService {
-  private _devices = new BehaviorSubject<UnifiedDevice[]>([]);
+  private _cloudDevices = new BehaviorSubject<UnifiedDevice[]>([]);
+  private _mergedDevices = new BehaviorSubject<UnifiedDevice[]>([]);
   private _loading = new BehaviorSubject(false);
   private _error = new BehaviorSubject<string | null>(null);
 
-  devices$ = this._devices.asObservable();
+  cloudDevices$ = this._cloudDevices.asObservable();
+  devices$ = this._mergedDevices.asObservable();
   loading$ = this._loading.asObservable();
   error$ = this._error.asObservable();
 
@@ -21,7 +23,6 @@ export class CloudDevicesService {
 
   loadFromCloud() {
     const apiKey = this.settings.apiKey;
-    console.log('apiKey', apiKey);
     if (!apiKey) {
       this._error.next('Please set your API key in Settings');
       return;
@@ -29,14 +30,12 @@ export class CloudDevicesService {
     this._loading.next(true);
     this._error.next(null);
     const url = `${environment.cloudApiUrl}?apikey=${encodeURIComponent(apiKey)}`;
-    console.log('url', url);
+
     fetch(url)
       .then(res => res.json())
       .then((data: CloudDevicesMap) => {
-        console.log('data', data);
         const list = this.cloudMapToUnifiedList(data);
-        console.log('list', list);
-        this._devices.next(list);
+        this._cloudDevices.next(list);
         this._loading.next(false);
       })
       .catch(err => {
@@ -58,8 +57,7 @@ export class CloudDevicesService {
   }
 
   getCounts(): { total: number; active: number; inactive: number } {
-    const list = this._devices.getValue();
-    console.log('list', list);
+    const list = this._mergedDevices.getValue();
     const now = Math.floor(Date.now() / 1000);
     const threshold = now - this.ACTIVE_THRESHOLD_MS / 1000;
     let active = 0;
@@ -74,10 +72,10 @@ export class CloudDevicesService {
   }
 
   getDevicesSnapshot(): UnifiedDevice[] {
-    return this._devices.getValue();
+    return this._mergedDevices.getValue();
   }
 
   setMergedDevices(devices: UnifiedDevice[]) {
-    this._devices.next(devices);
+    this._mergedDevices.next(devices);
   }
 }

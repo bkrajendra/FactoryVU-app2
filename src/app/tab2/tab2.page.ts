@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonIcon, IonButton, IonButtons } from '@ionic/angular/standalone';
 import { MdnsDevice } from 'capacitor-mdns-discovery';
 import { DiscoveryService } from '../services/discovery';
@@ -32,17 +33,18 @@ export class Tab2Page implements OnInit, OnDestroy {
   constructor(
     private cloud: CloudDevicesService,
     private discovery: DiscoveryService,
+    private router: Router,
   ) {}
 
   ngOnInit() {
     this.cloud.loadFromCloud();
+
     this.subs.push(
       this.cloud.loading$.subscribe((l: boolean) => (this.loading = l)),
       this.cloud.error$.subscribe((e: string | null) => (this.error = e)),
       this.discovery.scanning$.subscribe(s => (this.scanning = s)),
-      combineLatest([this.cloud.devices$, this.discovery.devices$]).subscribe(([cloudList, mdnsList]: [UnifiedDevice[], MdnsDevice[]]) => {
+      combineLatest([this.cloud.cloudDevices$, this.discovery.devices$]).subscribe(([cloudList, mdnsList]: [UnifiedDevice[], MdnsDevice[]]) => {
         this.devices = this.mergeDevices(cloudList, mdnsList ?? []);
-        console.log('devices', this.devices);
         this.cloud.setMergedDevices(this.devices);
       }),
     );
@@ -114,5 +116,9 @@ export class Tab2Page implements OnInit, OnDestroy {
 
   trackById(_: number, d: UnifiedDevice) {
     return d.id;
+  }
+
+  goToDevice(device: UnifiedDevice) {
+    this.router.navigate(['/device', device.id]);
   }
 }

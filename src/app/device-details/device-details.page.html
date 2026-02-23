@@ -1,0 +1,112 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/tab2"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ device?.name || device?.id || 'Device Details' }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="manualRefresh()" [disabled]="isFetching">
+        <ion-icon name="sync-outline" [class.spinning]="isFetching"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="details-content" *ngIf="device">
+    <ion-card class="source-selector-card">
+      <ion-card-content>
+        <div class="source-label">Data Source</div>
+        <ion-segment [value]="dataSource" (ionChange)="onDataSourceChange($any($event))">
+          <ion-segment-button value="cloud">
+            <ion-icon name="cloud-outline"></ion-icon>
+            <ion-label>Cloud</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="local" [disabled]="!canUseLocal()">
+            <ion-icon name="server-outline"></ion-icon>
+            <ion-label>Local</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+        <div class="source-info" *ngIf="!canUseLocal() && dataSource === 'cloud'">
+          <small>Local source unavailable - no local IP found</small>
+        </div>
+        <div class="fetch-error" *ngIf="fetchError">
+          <ion-icon name="warning-outline"></ion-icon>
+          {{ fetchError }}
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card class="device-info-card">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="cube-outline"></ion-icon>
+          {{ device.name || device.id }}
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="info-row">
+          <span class="label">Device ID:</span>
+          <span class="value">{{ device.id }}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Source:</span>
+          <ion-badge [color]="getSourceBadgeColor()">{{ device.source | uppercase }}</ion-badge>
+        </div>
+        <div class="info-row" *ngIf="device.localAddress">
+          <span class="label">Local Address:</span>
+          <span class="value">{{ device.localAddress }}</span>
+        </div>
+        <div class="info-row" *ngIf="lastUpdate">
+          <span class="label">Last Update:</span>
+          <span class="value">{{ lastUpdate | date:'HH:mm:ss' }}</span>
+        </div>
+        <div class="current-values">
+          <div class="value-card temp">
+            <ion-icon name="thermometer-outline"></ion-icon>
+            <span class="big-value">{{ currentTemp !== null ? currentTemp.toFixed(1) : '--' }}</span>
+            <span class="unit">°C</span>
+          </div>
+          <div class="value-card humidity">
+            <ion-icon name="water-outline"></ion-icon>
+            <span class="big-value">{{ currentHumidity !== null ? currentHumidity.toFixed(1) : '--' }}</span>
+            <span class="unit">%</span>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card class="chart-card">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="thermometer-outline"></ion-icon>
+          Temperature History
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="chart-container">
+          <canvas #tempChart></canvas>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card class="chart-card">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="water-outline"></ion-icon>
+          Humidity History
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="chart-container">
+          <canvas #humidityChart></canvas>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <div class="no-device" *ngIf="!device">
+    <ion-icon name="warning-outline"></ion-icon>
+    <p>Device not found</p>
+  </div>
+</ion-content>

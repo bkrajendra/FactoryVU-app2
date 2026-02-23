@@ -57,10 +57,81 @@
     </section>
 
     <section class="section">
-      <h2>Other</h2>
-      <ion-item lines="none">
-        <ion-label>More options coming soon</ion-label>
+      <h2>Temperature Thresholds (°C)</h2>
+      <ion-item lines="full">
+        <ion-icon name="thermometer-outline" slot="start"></ion-icon>
+        <ion-input
+          label="Upper Limit"
+          labelPlacement="stacked"
+          type="number"
+          [(ngModel)]="tempUpper"
+          (ionInput)="onThresholdChange()"
+          placeholder="35"></ion-input>
       </ion-item>
+      <ion-item lines="full">
+        <ion-icon name="thermometer-outline" slot="start"></ion-icon>
+        <ion-input
+          label="Lower Limit"
+          labelPlacement="stacked"
+          type="number"
+          [(ngModel)]="tempLower"
+          (ionInput)="onThresholdChange()"
+          placeholder="15"></ion-input>
+      </ion-item>
+    </section>
+
+    <section class="section">
+      <h2>Humidity Thresholds (%)</h2>
+      <ion-item lines="full">
+        <ion-icon name="water-outline" slot="start"></ion-icon>
+        <ion-input
+          label="Upper Limit"
+          labelPlacement="stacked"
+          type="number"
+          [(ngModel)]="humidityUpper"
+          (ionInput)="onThresholdChange()"
+          placeholder="80"></ion-input>
+      </ion-item>
+      <ion-item lines="full">
+        <ion-icon name="water-outline" slot="start"></ion-icon>
+        <ion-input
+          label="Lower Limit"
+          labelPlacement="stacked"
+          type="number"
+          [(ngModel)]="humidityLower"
+          (ionInput)="onThresholdChange()"
+          placeholder="30"></ion-input>
+      </ion-item>
+    </section>
+
+    <section class="section">
+      <h2>Graph Settings</h2>
+      <ion-item lines="full">
+        <ion-icon name="time-outline" slot="start"></ion-icon>
+        <ion-input
+          label="Update Interval (seconds)"
+          labelPlacement="stacked"
+          type="number"
+          [(ngModel)]="updateIntervalInput"
+          (ionInput)="onThresholdChange()"
+          placeholder="5"
+          min="1"></ion-input>
+      </ion-item>
+      <div class="api-key-actions">
+        <ion-button
+          expand="block"
+          (click)="saveThresholds()"
+          [disabled]="!hasUnsavedThresholds">
+          <ion-icon name="save-outline" slot="start"></ion-icon>
+          Save Settings
+        </ion-button>
+        <ion-text *ngIf="thresholdMessage" color="success" class="save-message">
+          <p>{{ thresholdMessage }}</p>
+        </ion-text>
+        <ion-text *ngIf="hasUnsavedThresholds" color="warning" class="unsaved-message">
+          <p>You have unsaved changes</p>
+        </ion-text>
+      </div>
     </section>
   </div>
 </ion-content>
