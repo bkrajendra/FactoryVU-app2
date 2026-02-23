@@ -45,6 +45,7 @@ jobs:
       - name: Create CI keystore and properties
         run: |
           # Create keystore in android/app/ directory
+          # For PKCS12, key password must match store password
           keytool -genkeypair -v \
             -storetype PKCS12 \
             -keystore android/app/ci-release.keystore \
@@ -52,14 +53,14 @@ jobs:
             -keyalg RSA \
             -keysize 2048 \
             -validity 10000 \
-            -storepass ci-store-pass \
-            -keypass ci-key-pass \
+            -storepass android \
+            -keypass android \
             -dname "CN=CI, OU=CI, O=CI, L=CI, S=CI, C=US"
           # Create keystore.properties in android/ directory (rootProject)
           echo "storeFile=ci-release.keystore" > android/keystore.properties
-          echo "storePassword=ci-store-pass" >> android/keystore.properties
+          echo "storePassword=android" >> android/keystore.properties
           echo "keyAlias=ci" >> android/keystore.properties
-          echo "keyPassword=ci-key-pass" >> android/keystore.properties
+          echo "keyPassword=android" >> android/keystore.properties
 
       - name: Build release APK
         # working-directory: android
