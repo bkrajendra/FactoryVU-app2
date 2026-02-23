@@ -153,7 +153,7 @@ export class DeviceDetailsPage implements OnInit, OnDestroy, AfterViewInit {
       throw new Error('No local address available');
     }
     const host = this.device.localAddress.split(':')[0];
-    const url = `http://${host}/api/data`;
+    const url = `http://${host}/api/v1/data`;
     const response = await fetch(url);
     if (!response.ok) {
       throw new Error(`Local API error: ${response.status}`);
@@ -250,7 +250,7 @@ export class DeviceDetailsPage implements OnInit, OnDestroy, AfterViewInit {
             display: true,
             title: { display: false },
             ticks: { maxTicksLimit: 6, color: '#666' },
-            grid: { color: 'rgba(0,0,0,0.05)' },
+            grid: { color: 'rgba(230, 214, 214, 0.05)' },
           },
           y: {
             display: true,
