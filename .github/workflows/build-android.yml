@@ -59,9 +59,10 @@ jobs:
           echo "storePassword=ci-store-pass" >> keystore.properties
           echo "keyAlias=ci" >> keystore.properties
           echo "keyPassword=ci-key-pass" >> keystore.properties
-
+          
       - name: Make gradlew executable
-        run: chmod +x ./gradlew
+        working-directory: android
+        run: chmod +x android/gradlew
 
       - name: Build release APK
         working-directory: android
