@@ -12,8 +12,7 @@ import {
   IonIcon,
   IonInput,
   IonButton,
-  IonText,
-  IonItemDivider,
+  IonText
 } from '@ionic/angular/standalone';
 import { SettingsService } from '../services/settings.service';
 
@@ -34,8 +33,7 @@ import { SettingsService } from '../services/settings.service';
     IonIcon,
     IonInput,
     IonButton,
-    IonText,
-    IonItemDivider,
+    IonText
   ],
 })
 export class Tab3Page implements OnInit {

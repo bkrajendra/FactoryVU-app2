@@ -59,18 +59,14 @@ jobs:
           echo "storePassword=ci-store-pass" >> keystore.properties
           echo "keyAlias=ci" >> keystore.properties
           echo "keyPassword=ci-key-pass" >> keystore.properties
-          
-      - name: Make gradlew executable
-        working-directory: android
-        run: chmod +x android/gradlew
 
       - name: Build release APK
-        working-directory: android
-        run: ./gradlew assembleRelease --no-daemon
+        # working-directory: android
+        run: ./android/gradlew assembleRelease --no-daemon
 
       - name: Build release AAB
-        working-directory: android
-        run: ./gradlew bundleRelease --no-daemon
+        # working-directory: android
+        run: ./android/gradlew bundleRelease --no-daemon
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
