@@ -1,0 +1,81 @@
+name: Build Android APK and AAB
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '20'
+  JAVA_VERSION: '17'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: 'gradle'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build web app
+        run: npm run build -- --configuration=production
+
+      - name: Sync Capacitor Android
+        run: npx cap sync android
+
+      # For production releases, add secrets: KEYSTORE_BASE64, KEYSTORE_PASSWORD, KEY_ALIAS, KEY_PASSWORD
+      # and replace this step with one that decodes the keystore and writes keystore.properties from secrets.
+      - name: Create CI keystore and properties
+        working-directory: android
+        run: |
+          keytool -genkeypair -v \
+            -storetype PKCS12 \
+            -keystore ci-release.keystore \
+            -alias ci \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 10000 \
+            -storepass ci-store-pass \
+            -keypass ci-key-pass \
+            -dname "CN=CI, OU=CI, O=CI, L=CI, S=CI, C=US"
+          echo "storeFile=ci-release.keystore" > keystore.properties
+          echo "storePassword=ci-store-pass" >> keystore.properties
+          echo "keyAlias=ci" >> keystore.properties
+          echo "keyPassword=ci-key-pass" >> keystore.properties
+
+      - name: Build release APK
+        working-directory: android
+        run: ./gradlew assembleRelease --no-daemon
+
+      - name: Build release AAB
+        working-directory: android
+        run: ./gradlew bundleRelease --no-daemon
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-apk
+          path: android/app/build/outputs/apk/release/app-release.apk
+
+      - name: Upload AAB artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-aab
+          path: android/app/build/outputs/bundle/release/app-release.aab
