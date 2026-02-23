@@ -42,6 +42,7 @@ export class Tab2Page implements OnInit, OnDestroy {
       this.discovery.scanning$.subscribe(s => (this.scanning = s)),
       combineLatest([this.cloud.devices$, this.discovery.devices$]).subscribe(([cloudList, mdnsList]: [UnifiedDevice[], MdnsDevice[]]) => {
         this.devices = this.mergeDevices(cloudList, mdnsList ?? []);
+        console.log('devices', this.devices);
         this.cloud.setMergedDevices(this.devices);
       }),
     );

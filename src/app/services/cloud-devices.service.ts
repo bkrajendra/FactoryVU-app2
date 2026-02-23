@@ -21,6 +21,7 @@ export class CloudDevicesService {
 
   loadFromCloud() {
     const apiKey = this.settings.apiKey;
+    console.log('apiKey', apiKey);
     if (!apiKey) {
       this._error.next('Please set your API key in Settings');
       return;
@@ -28,11 +29,13 @@ export class CloudDevicesService {
     this._loading.next(true);
     this._error.next(null);
     const url = `${environment.cloudApiUrl}?apikey=${encodeURIComponent(apiKey)}`;
-
+    console.log('url', url);
     fetch(url)
       .then(res => res.json())
       .then((data: CloudDevicesMap) => {
+        console.log('data', data);
         const list = this.cloudMapToUnifiedList(data);
+        console.log('list', list);
         this._devices.next(list);
         this._loading.next(false);
       })
@@ -56,6 +59,7 @@ export class CloudDevicesService {
 
   getCounts(): { total: number; active: number; inactive: number } {
     const list = this._devices.getValue();
+    console.log('list', list);
     const now = Math.floor(Date.now() / 1000);
     const threshold = now - this.ACTIVE_THRESHOLD_MS / 1000;
     let active = 0;

@@ -35,7 +35,9 @@ export class Tab1Page {
     this.cloud.loadFromCloud();
     this.subs.push(
       this.cloud.devices$.subscribe(() => {
+        console.log('devices updated');
         this.counts = this.cloud.getCounts();
+        console.log('counts', this.counts);
       }),
     );
   }

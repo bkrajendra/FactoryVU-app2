@@ -13,12 +13,27 @@
         <ion-input
           label="API Key"
           labelPlacement="stacked"
-          [value]="apiKey$ | async"
-          (ionInput)="setApiKey($any($event).detail.value ?? '')"
+          [value]="apiKeyInput"
+          (ionInput)="onApiKeyInput($any($event).detail.value ?? '')"
           type="password"
-          placeholder="Enter your scare API key"
+          placeholder="Enter your API key"
           autocomplete="off"></ion-input>
       </ion-item>
+      <div class="api-key-actions">
+        <ion-button
+          expand="block"
+          (click)="saveApiKey()"
+          [disabled]="!hasUnsavedChanges">
+          <ion-icon name="save-outline" slot="start"></ion-icon>
+          Save API Key
+        </ion-button>
+        <ion-text *ngIf="saveMessage" color="success" class="save-message">
+          <p>{{ saveMessage }}</p>
+        </ion-text>
+        <ion-text *ngIf="hasUnsavedChanges" color="warning" class="unsaved-message">
+          <p>You have unsaved changes</p>
+        </ion-text>
+      </div>
     </section>
 
     <section class="section">

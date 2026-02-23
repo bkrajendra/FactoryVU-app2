@@ -1,6 +1,19 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonLabel, IonToggle, IonIcon, IonInput } from '@ionic/angular/standalone';
+import { FormsModule } from '@angular/forms';
+import {
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent,
+  IonItem,
+  IonLabel,
+  IonToggle,
+  IonIcon,
+  IonInput,
+  IonButton,
+  IonText,
+} from '@ionic/angular/standalone';
 import { SettingsService } from '../services/settings.service';
 
 @Component({
@@ -9,6 +22,7 @@ import { SettingsService } from '../services/settings.service';
   styleUrls: ['tab3.page.scss'],
   imports: [
     CommonModule,
+    FormsModule,
     IonHeader,
     IonToolbar,
     IonTitle,
@@ -18,17 +32,35 @@ import { SettingsService } from '../services/settings.service';
     IonToggle,
     IonIcon,
     IonInput,
+    IonButton,
+    IonText,
   ],
 })
-export class Tab3Page {
+export class Tab3Page implements OnInit {
   notificationSms$ = this.settings.notificationSms$;
   notificationEmail$ = this.settings.notificationEmail$;
-  apiKey$ = this.settings.apiKey$;
+
+  apiKeyInput = '';
+  saveMessage = '';
+  hasUnsavedChanges = false;
 
   constructor(private settings: SettingsService) {}
 
-  setApiKey(value: string) {
-    this.settings.setApiKey(value ?? '');
+  ngOnInit() {
+    this.apiKeyInput = this.settings.apiKey;
+  }
+
+  onApiKeyInput(value: string) {
+    this.apiKeyInput = value ?? '';
+    this.hasUnsavedChanges = this.apiKeyInput !== this.settings.apiKey;
+    this.saveMessage = '';
+  }
+
+  saveApiKey() {
+    this.settings.setApiKey(this.apiKeyInput);
+    this.hasUnsavedChanges = false;
+    this.saveMessage = 'API key saved successfully';
+    setTimeout(() => (this.saveMessage = ''), 3000);
   }
 
   setSms(enabled: boolean) {
