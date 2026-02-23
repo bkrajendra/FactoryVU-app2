@@ -1,17 +1,44 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
-      Tab 1
-    </ion-title>
+    <ion-title>Home</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 1</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <div class="home-content">
+    <section class="welcome">
+      <h1>Welcome</h1>
+      <p *ngIf="!(user$ | async)" class="sub">Sign in to manage your devices</p>
+      <p *ngIf="user$ | async as u" class="user-line">Hello, <strong>{{ u.name }}</strong></p>
+      <div class="auth-actions">
+        <ion-button *ngIf="!(user$ | async)" (click)="login()" fill="solid">Login</ion-button>
+        <ion-button *ngIf="user$ | async" (click)="logout()" fill="outline">Logout</ion-button>
+      </div>
+    </section>
 
-  <app-explore-container name="Tab 1 page"></app-explore-container>
+    <section class="quick-action">
+      <ion-button expand="block" (click)="goToDevices()" class="devices-btn">
+        <ion-icon name="hardware-outline"></ion-icon>
+        View Devices
+      </ion-button>
+    </section>
+
+    <section class="stats">
+      <h2>System info</h2>
+      <div class="stat-cards">
+        <div class="stat-card">
+          <span class="stat-value">{{ counts.total }}</span>
+          <span class="stat-label">Total devices</span>
+        </div>
+        <div class="stat-card active">
+          <span class="stat-value">{{ counts.active }}</span>
+          <span class="stat-label">Active</span>
+        </div>
+        <div class="stat-card inactive">
+          <span class="stat-value">{{ counts.inactive }}</span>
+          <span class="stat-label">Inactive</span>
+        </div>
+      </div>
+    </section>
+  </div>
 </ion-content>

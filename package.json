@@ -1,15 +1,16 @@
 {
   "name": "FactoryVU",
-  "version": "0.0.1",
-  "author": "Ionic Framework",
-  "homepage": "https://ionicframework.com/",
+  "version": "2.0.1",
+  "author": "Rajendra Khope",
+  "homepage": "https://iocare.in/",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "dbuild": "docker run --network host -it --rm -v '$(pwd -W)':/workdir -v /workdir/node_modules bkrajendra/ionic-builder:ionic-8 utils build"
   },
   "private": true,
   "dependencies": {
@@ -21,12 +22,14 @@
     "@angular/platform-browser": "^20.0.0",
     "@angular/platform-browser-dynamic": "^20.0.0",
     "@angular/router": "^20.0.0",
+    "@capacitor/android": "^8.1.0",
     "@capacitor/app": "8.0.1",
     "@capacitor/core": "8.1.0",
     "@capacitor/haptics": "8.0.0",
     "@capacitor/keyboard": "8.0.0",
     "@capacitor/status-bar": "8.0.1",
     "@ionic/angular": "^8.0.0",
+    "capacitor-mdns-discovery": "^0.0.2",
     "ionicons": "^7.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
@@ -60,5 +63,5 @@
     "karma-jasmine-html-reporter": "~2.1.0",
     "typescript": "~5.9.0"
   },
-  "description": "An Ionic project"
+  "description": "FactoryVU - device manager companion app"
 }

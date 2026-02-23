@@ -1,0 +1,27 @@
+ion-toolbar { --background: #111; }
+ion-content { --background: #f4f5f8; }
+
+.settings-content {
+  padding: 16px;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.section {
+  margin-bottom: 24px;
+  h2 {
+    font-size: 12px;
+    font-weight: 700;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 0 16px 8px;
+    margin: 0;
+  }
+  ion-item {
+    --background: #fff;
+    border-radius: 8px;
+    margin-bottom: 4px;
+    ion-icon { margin-right: 12px; color: #666; }
+  }
+}

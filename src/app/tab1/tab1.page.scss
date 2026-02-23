@@ -1,0 +1,55 @@
+// Home tab
+ion-toolbar { --background: #111; }
+ion-content { --background: #f4f5f8; }
+
+.home-content {
+  padding: 24px 16px;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.welcome {
+  background: #111;
+  color: #fff;
+  padding: 28px 20px;
+  border-radius: 16px;
+  margin-bottom: 20px;
+  h1 { font-size: 24px; font-weight: 700; margin: 0 0 8px; }
+  .sub { color: rgba(255,255,255,0.7); margin: 0 0 16px; font-size: 14px; }
+  .user-line { margin: 0 0 16px; font-size: 15px; }
+  .auth-actions ion-button { margin-right: 8px; }
+}
+
+.quick-action {
+  margin-bottom: 24px;
+  .devices-btn {
+    --background: #00aa55;
+    --color: #fff;
+    font-weight: 600;
+    ion-icon { margin-right: 8px; vertical-align: middle; }
+  }
+}
+
+.stats {
+  h2 { font-size: 14px; font-weight: 700; color: #666; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 12px; }
+}
+
+.stat-cards {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.stat-card {
+  flex: 1;
+  min-width: 90px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  text-align: center;
+  .stat-value { display: block; font-size: 24px; font-weight: 800; color: #111; }
+  .stat-label { font-size: 11px; color: #888; text-transform: uppercase; }
+  &.active .stat-value { color: #00aa55; }
+  &.inactive .stat-value { color: #999; }
+}

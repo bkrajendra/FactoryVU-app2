@@ -1,9 +1,17 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
+  appId: 'com.rajendrakhope.factoryvu2',
   appName: 'FactoryVU',
-  webDir: 'www'
+  webDir: 'www',
+  plugins: {
+    PushNotifications: {
+      presentationOptions: ['badge', 'sound', 'alert'],
+    },
+    CapacitorCommunityNativeAudio: {
+      audioFocus: true,
+    },
+  },
 };
 
 export default config;

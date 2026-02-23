@@ -1,17 +1,58 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
-      Tab 2
-    </ion-title>
+    <ion-title>Devices</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="refreshCloud()" [disabled]="loading">
+        <ion-icon name="refresh-outline"></ion-icon>
+      </ion-button>
+      <ion-button (click)="toggleScan()">
+        <ion-icon [name]="scanning ? 'stop-circle' : 'wifi-outline'"></ion-icon>
+        {{ scanning ? 'Stop' : 'Scan' }}
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 2</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <div class="devices-content">
+    <div class="error-banner" *ngIf="error">
+      <ion-icon name="warning-outline"></ion-icon>
+      {{ error }}
+    </div>
 
-  <app-explore-container name="Tab 2 page"></app-explore-container>
+    <div class="loading" *ngIf="loading">
+      <ion-icon name="hourglass-outline"></ion-icon>
+      Loading from cloud…
+    </div>
+
+    <div class="device-list" *ngIf="!loading && devices.length > 0">
+      <div class="section-header">
+        <span>All devices</span>
+        <span class="count-badge">{{ devices.length }}</span>
+      </div>
+      <div
+        class="device-card"
+        *ngFor="let device of devices; trackBy: trackById">
+        <div class="card-body">
+          <div class="device-name">{{ device.name || device.id }}</div>
+          <div class="device-meta">
+            <span *ngIf="device.temp != null">{{ device.temp }}°C</span>
+            <span *ngIf="device.humidity != null">{{ device.humidity }}%</span>
+            <span class="last-seen">{{ formatLastSeen(device.lastSeen) }}</span>
+          </div>
+          <div class="device-sources">
+            <span class="tag" [class.cloud]="device.source === 'cloud' || device.source === 'both'">Cloud</span>
+            <span class="tag" [class.mdns]="device.source === 'mdns' || device.source === 'both'">Local</span>
+            <span class="tag local-addr" *ngIf="device.localAddress">{{ device.localAddress }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="empty" *ngIf="!loading && devices.length === 0">
+      <ion-icon name="hardware-outline" class="empty-icon"></ion-icon>
+      <p>No devices yet</p>
+      <small>Pull to refresh cloud list or tap Scan to discover devices on your network.</small>
+    </div>
+  </div>
 </ion-content>

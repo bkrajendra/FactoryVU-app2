@@ -1,17 +1,51 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
-      Tab 3
-    </ion-title>
+    <ion-title>Settings</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 3</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <div class="settings-content">
+    <section class="section">
+      <h2>Cloud API</h2>
+      <ion-item lines="full">
+        <ion-icon name="key-outline" slot="start"></ion-icon>
+        <ion-input
+          label="API Key"
+          labelPlacement="stacked"
+          [value]="apiKey$ | async"
+          (ionInput)="setApiKey($any($event).detail.value ?? '')"
+          type="password"
+          placeholder="Enter your scare API key"
+          autocomplete="off"></ion-input>
+      </ion-item>
+    </section>
 
-  <app-explore-container name="Tab 3 page"></app-explore-container>
+    <section class="section">
+      <h2>Notifications</h2>
+      <ion-item lines="full">
+        <ion-icon name="chatbubble-outline" slot="start"></ion-icon>
+        <ion-label>SMS notifications</ion-label>
+        <ion-toggle
+          [checked]="(notificationSms$ | async) ?? true"
+          (ionChange)="setSms($any($event).detail.checked)"
+          slot="end"></ion-toggle>
+      </ion-item>
+      <ion-item lines="full">
+        <ion-icon name="mail-outline" slot="start"></ion-icon>
+        <ion-label>Email notifications</ion-label>
+        <ion-toggle
+          [checked]="(notificationEmail$ | async) ?? true"
+          (ionChange)="setEmail($any($event).detail.checked)"
+          slot="end"></ion-toggle>
+      </ion-item>
+    </section>
+
+    <section class="section">
+      <h2>Other</h2>
+      <ion-item lines="none">
+        <ion-label>More options coming soon</ion-label>
+      </ion-item>
+    </section>
+  </div>
 </ion-content>
