@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonIcon, IonButton } from '@ionic/angular/standalone';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonIcon, IonButton, IonButtons } from '@ionic/angular/standalone';
 import { MdnsDevice } from 'capacitor-mdns-discovery';
 import { DiscoveryService } from '../services/discovery';
 import { CloudDevicesService } from '../services/cloud-devices.service';
@@ -19,6 +19,7 @@ import { Subscription, combineLatest } from 'rxjs';
     IonContent,
     IonIcon,
     IonButton,
+    IonButtons,
   ],
 })
 export class Tab2Page implements OnInit, OnDestroy {
