@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import {
@@ -92,11 +92,9 @@ export class DeviceDetailsPage implements OnInit, OnDestroy, AfterViewInit {
 
   private readonly CLOUD_API_BASE = 'https://scare.iocare.in/input/get';
 
-  constructor(
-    private route: ActivatedRoute,
-    private cloud: CloudDevicesService,
-    private settings: SettingsService,
-  ) {}
+  private route = inject(ActivatedRoute);
+  private cloud = inject(CloudDevicesService);
+  private settings = inject(SettingsService);
 
   ngOnInit() {
     this.deviceId = this.route.snapshot.paramMap.get('id') ?? '';
