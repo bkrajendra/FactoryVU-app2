@@ -1,0 +1,52 @@
+name: Deploy FactoryVU PWA to Cloudflare
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  NODE_VERSION: '22'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Install Dependencies
+        run: npm i
+
+      - name: Build Ionic PWA
+        run: |
+          npm run build -- --configuration=production --base-href /
+
+
+      - name: Add PWA Cache Headers
+        run: |
+          echo "/service-worker.js" >> www/_headers
+          echo "  Cache-Control: no-cache" >> www/_headers
+          echo "" >> www/_headers
+          echo "/ngsw.json" >> www/_headers
+          echo "  Cache-Control: no-cache" >> www/_headers
+          echo "" >> www/_headers
+          echo "/index.html" >> www/_headers
+          echo "  Cache-Control: no-cache" >> www/_headers
+
+      # - name: Deploy to Cloudflare Pages
+      #   uses: cloudflare/wrangler-action@v3
+      #   with:
+      #     apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      #     accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      #     command: >
+      #       pages deploy www
+      #       --project-name=factoryvu
+      #       --branch=main
