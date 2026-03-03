@@ -4,6 +4,10 @@ const config: CapacitorConfig = {
   appId: 'com.rajendrakhope.factoryvu2',
   appName: 'FactoryVU',
   webDir: 'www',
+  ios: {
+    // ... additional configuration
+    handleApplicationNotifications: false
+  },
   plugins: {
     PushNotifications: {
       presentationOptions: ['badge', 'sound', 'alert'],
