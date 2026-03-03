@@ -62,7 +62,8 @@ jobs:
       - name: Set up release signing (from secrets)
         if: env.USE_RELEASE_KEYSTORE == 'true'
         run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/release.keystore
+          # Gradle expects storeFile relative to the app module, so put it under android/app/
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/release.keystore
           printf "storeFile=release.keystore\nstorePassword=%s\nkeyAlias=%s\nkeyPassword=%s\n" \
             "${{ secrets.KEYSTORE_PASSWORD }}" "${{ secrets.KEYSTORE_ALIAS }}" "${{ secrets.KEY_PASSWORD }}" \
             > android/keystore.properties
@@ -71,9 +72,10 @@ jobs:
       - name: Create CI keystore and properties
         if: env.USE_RELEASE_KEYSTORE != 'true'
         run: |
+          # For CI, also place keystore under android/app/ so storeFile resolves correctly
           keytool -genkeypair -v \
             -storetype PKCS12 \
-            -keystore android/ci-release.keystore \
+            -keystore android/app/ci-release.keystore \
             -alias ci \
             -keyalg RSA \
             -keysize 2048 \
