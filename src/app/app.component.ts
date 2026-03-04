@@ -1,7 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
 import OneSignal from 'onesignal-cordova-plugin';
 import { Capacitor } from '@capacitor/core';
+import { SwUpdate, VersionReadyEvent } from '@angular/service-worker';
+import { AlertController } from '@ionic/angular/standalone';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -9,11 +12,15 @@ import { Capacitor } from '@capacitor/core';
   imports: [IonApp, IonRouterOutlet],
 })
 export class AppComponent {
+  private swUpdate = inject(SwUpdate);
+  private alertCtrl = inject(AlertController);
+
   constructor() {
     if (Capacitor.isNativePlatform()) {
       this.initNativeOneSignal();
     } else {
       this.initWebOneSignal();
+      this.listenForPwaUpdates();
     }
   }
 
@@ -40,17 +47,46 @@ export class AppComponent {
       return;
     }
     const w = window as any;
-    const oneSignal = w.OneSignal || [];
-    w.OneSignal = oneSignal;
+    w.OneSignalDeferred = w.OneSignalDeferred || [];
 
-    oneSignal.push(() => {
-      oneSignal.init({
+    // Use the v16 Web SDK deferred initialization API
+    w.OneSignalDeferred.push(async (OneSignal: any) => {
+      await OneSignal.init({
         appId: 'df0fda53-9ba1-4cf1-89c1-a1f4c6a8934c',
         allowLocalhostAsSecureOrigin: true,
       });
 
       // Trigger the same IAM-based permission flow on web.
-      oneSignal.InAppMessages.addTrigger('ask_push_permission', 'true');
+      OneSignal.InAppMessages.addTrigger('ask_push_permission', 'true');
     });
+  }
+
+  /**
+   * Listen for Angular Service Worker version updates and prompt the user
+   * to reload when a new version is ready (web/PWA only).
+   */
+  private listenForPwaUpdates() {
+    if (!('serviceWorker' in navigator) || !this.swUpdate.isEnabled) {
+      return;
+    }
+
+    this.swUpdate.versionUpdates
+      .pipe(filter((evt): evt is VersionReadyEvent => evt.type === 'VERSION_READY'))
+      .subscribe(async () => {
+        const alert = await this.alertCtrl.create({
+          header: 'Update available',
+          message: 'A new version of FactoryVU is available.',
+          buttons: [
+            { text: 'Later', role: 'cancel' },
+            {
+              text: 'Reload',
+              handler: () => {
+                this.swUpdate.activateUpdate().then(() => document.location.reload());
+              },
+            },
+          ],
+        });
+        await alert.present();
+      });
   }
 }
