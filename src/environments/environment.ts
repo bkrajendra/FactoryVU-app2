@@ -5,6 +5,7 @@
 export const environment = {
   production: false,
   cloudApiUrl: 'https://scare.iocare.in/input/get',
+  version: '2.0.5',
 };
 
 /*

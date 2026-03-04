@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonIcon } from '@ionic/angular/standalone';
 import { AuthService } from '../services/auth.service';
 import { CloudDevicesService } from '../services/cloud-devices.service';
+import { environment } from '../../environments/environment';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -23,6 +24,7 @@ import { Subscription } from 'rxjs';
 export class Tab1Page {
   user$ = this.auth.user$;
   counts = { total: 0, active: 0, inactive: 0 };
+  appVersion = environment.version;
   private subs: Subscription[] = [];
 
   constructor(
