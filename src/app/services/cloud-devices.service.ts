@@ -30,7 +30,7 @@ export class CloudDevicesService {
     this._loading.next(true);
     this._error.next(null);
     const url = `${environment.cloudApiUrl}?apikey=${encodeURIComponent(apiKey)}`;
-
+    console.log('Loading devices from cloud:', url);
     fetch(url)
       .then(res => res.json())
       .then((data: CloudDevicesMap) => {
