@@ -7,13 +7,20 @@
 <ion-content [fullscreen]="true">
   <div class="home-content">
     <section class="welcome">
-      <h1>Welcome</h1>
-      <p *ngIf="!(user$ | async)" class="sub">Sign in to manage your devices</p>
-      <p *ngIf="user$ | async as u" class="user-line">Hello, <strong>{{ u.name }}</strong></p>
-      <div class="auth-actions">
-        <ion-button *ngIf="!(user$ | async)" (click)="login()" fill="solid">Login</ion-button>
-        <ion-button *ngIf="user$ | async" (click)="logout()" fill="outline">Logout</ion-button>
-      </div>
+      <ng-container *ngIf="hasApiKey; else apiKeySetup">
+        <h1>Welcome</h1>
+        <p class="sub">Manage your devices and sensors from one place.</p>
+      </ng-container>
+      <ng-template #apiKeySetup>
+        <h1>Welcome</h1>
+        <p class="sub">Go to Settings to add your API key to load devices.</p>
+        <div class="setup-actions">
+          <ion-button (click)="goToSettings()" fill="solid">
+            <ion-icon name="key-outline"></ion-icon>
+            Open Settings
+          </ion-button>
+        </div>
+      </ng-template>
     </section>
 
     <section class="quick-action">

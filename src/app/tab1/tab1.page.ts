@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonIcon } from '@ionic/angular/standalone';
-import { AuthService } from '../services/auth.service';
 import { CloudDevicesService } from '../services/cloud-devices.service';
+import { SettingsService } from '../services/settings.service';
 import { environment } from '../../environments/environment';
 import { Subscription } from 'rxjs';
 
@@ -22,26 +22,34 @@ import { Subscription } from 'rxjs';
   ],
 })
 export class Tab1Page {
-  user$ = this.auth.user$;
   counts = { total: 0, active: 0, inactive: 0 };
   appVersion = environment.version;
+  hasApiKey = false;
   private subs: Subscription[] = [];
 
   constructor(
-    private auth: AuthService,
     private cloud: CloudDevicesService,
+    private settings: SettingsService,
     private router: Router,
   ) {}
 
   ngOnInit() {
-    this.cloud.loadFromCloud();
     this.subs.push(
-      this.cloud.devices$.subscribe(() => {
-        console.log('devices updated');
+      this.settings.apiKey$.subscribe((k: string) => {
+        this.hasApiKey = !!(k ?? '').trim();
+      }),
+      // Home should populate System Info even before visiting Devices tab.
+      // Devices tab later overwrites merged devices when it merges mDNS + cloud.
+      this.cloud.cloudDevices$.subscribe((list) => {
+        this.cloud.setMergedDevices(list);
         this.counts = this.cloud.getCounts();
-        console.log('counts', this.counts);
       }),
     );
+  }
+
+  ionViewWillEnter() {
+    // Refresh whenever the Home tab becomes visible.
+    this.cloud.loadFromCloud();
   }
 
   ngOnDestroy() {
@@ -52,11 +60,7 @@ export class Tab1Page {
     this.router.navigate(['/tabs/tab2']);
   }
 
-  login() {
-    this.auth.login('Guest User', 'guest@example.com');
-  }
-
-  logout() {
-    this.auth.logout();
+  goToSettings() {
+    this.router.navigate(['/tabs/tab3']);
   }
 }

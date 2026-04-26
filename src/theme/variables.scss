@@ -1,4 +1,98 @@
-// For information on how to create your own theme, please refer to:
-// https://ionicframework.com/docs/theming/
+/* For information on how to create your own theme, please refer to:
+ * https://ionicframework.com/docs/theming/
+ */
 
-  
+/**
+ * FactoryVU — Light theme
+ * Minimal, modern, high-contrast without dark UI.
+ */
+:root {
+  /** Brand (primary) — clean teal */
+  --ion-color-primary: #0ea5a8;
+  --ion-color-primary-rgb: 14, 165, 168;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #0c9194;
+  --ion-color-primary-tint: #25b0b3;
+
+  /** Secondary — soft indigo for accents */
+  --ion-color-secondary: #4f46e5;
+  --ion-color-secondary-rgb: 79, 70, 229;
+  --ion-color-secondary-contrast: #ffffff;
+  --ion-color-secondary-contrast-rgb: 255, 255, 255;
+  --ion-color-secondary-shade: #463ed6;
+  --ion-color-secondary-tint: #615ae8;
+
+  /** Success — fresh green */
+  --ion-color-success: #22c55e;
+  --ion-color-success-rgb: 34, 197, 94;
+  --ion-color-success-contrast: #ffffff;
+  --ion-color-success-contrast-rgb: 255, 255, 255;
+  --ion-color-success-shade: #1eae53;
+  --ion-color-success-tint: #38cb6f;
+
+  /** Warning — warm amber */
+  --ion-color-warning: #f59e0b;
+  --ion-color-warning-rgb: 245, 158, 11;
+  --ion-color-warning-contrast: #1b1b1b;
+  --ion-color-warning-contrast-rgb: 27, 27, 27;
+  --ion-color-warning-shade: #d98b0a;
+  --ion-color-warning-tint: #f6a824;
+
+  /** Danger — restrained red (not too dark) */
+  --ion-color-danger: #ef4444;
+  --ion-color-danger-rgb: 239, 68, 68;
+  --ion-color-danger-contrast: #ffffff;
+  --ion-color-danger-contrast-rgb: 255, 255, 255;
+  --ion-color-danger-shade: #d93c3c;
+  --ion-color-danger-tint: #f15757;
+
+  /** Neutrals */
+  --ion-background-color: #f6f8fb;
+  --ion-background-color-rgb: 246, 248, 251;
+
+  --ion-text-color: #0f172a; /* slate-900 */
+  --ion-text-color-rgb: 15, 23, 42;
+
+  --ion-color-step-50: #f2f4f8;
+  --ion-color-step-100: #e9edf3;
+  --ion-color-step-150: #dfe5ee;
+  --ion-color-step-200: #d4dbe8;
+  --ion-color-step-250: #c8d1e2;
+  --ion-color-step-300: #bcc6db;
+  --ion-color-step-350: #b0bad4;
+  --ion-color-step-400: #a3afcd;
+  --ion-color-step-450: #97a3c6;
+  --ion-color-step-500: #8b98bf;
+  --ion-color-step-550: #7f8cb8;
+  --ion-color-step-600: #7381b1;
+  --ion-color-step-650: #6776aa;
+  --ion-color-step-700: #5b6aa3;
+  --ion-color-step-750: #505f9c;
+  --ion-color-step-800: #455495;
+  --ion-color-step-850: #3b4a8e;
+  --ion-color-step-900: #324088;
+  --ion-color-step-950: #2a377f;
+
+  /** Surfaces */
+  --ion-item-background: #ffffff;
+  --ion-card-background: #ffffff;
+  --ion-toolbar-background: rgba(246, 248, 251, 0.85);
+  --ion-tab-bar-background: rgba(255, 255, 255, 0.92);
+
+  /** Typography + rounding */
+  --ion-font-family: ui-sans-serif, system-ui, -apple-system, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+  --ion-border-radius: 16px;
+}
+
+/* App-specific design tokens (used in page scss) */
+:root {
+  --fvu-surface: #ffffff;
+  --fvu-surface-2: rgba(255, 255, 255, 0.72);
+  --fvu-stroke: rgba(15, 23, 42, 0.08);
+  --fvu-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+  --fvu-shadow-soft: 0 6px 18px rgba(15, 23, 42, 0.06);
+  --fvu-gradient: radial-gradient(1200px 600px at 20% -10%, rgba(14, 165, 168, 0.22), transparent 55%),
+    radial-gradient(1000px 520px at 95% 0%, rgba(79, 70, 229, 0.14), transparent 50%),
+    linear-gradient(180deg, #f6f8fb 0%, #f2f6ff 100%);
+}

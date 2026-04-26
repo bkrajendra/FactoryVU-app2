@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FactoryVU Support</title>
+    <style>
+      :root {
+        --bg: #f6f8fb;
+        --text: #0f172a;
+        --muted: rgba(15, 23, 42, 0.62);
+        --card: rgba(255, 255, 255, 0.78);
+        --stroke: rgba(15, 23, 42, 0.10);
+        --primary: #0ea5a8;
+        --shadow: 0 12px 34px rgba(15, 23, 42, 0.10);
+        --shadow-soft: 0 6px 18px rgba(15, 23, 42, 0.07);
+        --radius: 18px;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial;
+        color: var(--text);
+        background:
+          radial-gradient(1100px 520px at 15% -10%, rgba(14, 165, 168, 0.20), transparent 58%),
+          radial-gradient(900px 520px at 95% 0%, rgba(79, 70, 229, 0.12), transparent 55%),
+          linear-gradient(180deg, var(--bg) 0%, #f2f6ff 100%);
+        min-height: 100vh;
+        padding: 28px 16px;
+      }
+      .wrap { max-width: 900px; margin: 0 auto; }
+      header {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 16px;
+      }
+      h1 { font-size: 28px; margin: 0; letter-spacing: -0.3px; }
+      .back a { color: var(--muted); text-decoration: none; }
+      .back a:hover { color: var(--primary); }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--stroke);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 18px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      @media (min-width: 860px) {
+        .grid { grid-template-columns: 1.2fr 0.8fr; }
+      }
+      h2 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.8px; color: rgba(15, 23, 42, 0.55); margin: 0 0 10px; }
+      p { margin: 0 0 10px; color: var(--muted); line-height: 1.5; }
+      ul { margin: 0; padding-left: 18px; color: var(--muted); }
+      li { margin: 6px 0; }
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        border-radius: 999px;
+        border: 1px solid var(--stroke);
+        background: rgba(255, 255, 255, 0.8);
+        box-shadow: var(--shadow-soft);
+        color: rgba(15, 23, 42, 0.82);
+        text-decoration: none;
+        font-weight: 700;
+      }
+      .pill:hover { border-color: rgba(14, 165, 168, 0.35); }
+      .meta { font-size: 12px; color: rgba(15, 23, 42, 0.50); margin-top: 10px; }
+      code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        font-size: 12px;
+        background: rgba(15, 23, 42, 0.06);
+        padding: 2px 6px;
+        border-radius: 8px;
+        border: 1px solid rgba(15, 23, 42, 0.08);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <h1>FactoryVU Support</h1>
+        <div class="back"><a href="./index.html">← Back</a></div>
+      </header>
+
+      <div class="grid">
+        <section class="card">
+          <h2>Get help</h2>
+          <p>
+            FactoryVU is an industrial IoT companion app for monitoring and managing sensors and devices.
+            For help with setup, connectivity, or troubleshooting, contact us with a short description of the issue.
+          </p>
+
+          <ul>
+            <li>Include device model + firmware version (if applicable)</li>
+            <li>Include your app version and iOS version</li>
+            <li>If local discovery fails, confirm the network (SSID) and whether multicast/Bonjour is allowed</li>
+          </ul>
+
+          <p class="meta">
+            Tip: The app uses an API key configured in <code>Settings</code> to load devices from the cloud.
+          </p>
+        </section>
+
+        <aside class="card">
+          <h2>Contact</h2>
+          <p>
+            Support email:
+            <a class="pill" href="mailto:hello@rajendrakhope.com?subject=FactoryVU%20Support">hello@rajendrakhope.com</a>
+          </p>
+          <p>
+            Website:
+            <a class="pill" href="https://iocare.in" target="_blank" rel="noopener">iocare.in</a>
+          </p>
+          <p class="meta">
+            If you’re contacting support about discovery, mention the service types you are scanning (e.g. <code>_http._tcp</code>).
+          </p>
+        </aside>
+      </div>
+    </div>
+  </body>
+</html>

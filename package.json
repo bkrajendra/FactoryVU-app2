@@ -34,7 +34,7 @@
     "@capacitor/keyboard": "8.0.0",
     "@capacitor/status-bar": "8.0.1",
     "@ionic/angular": "^8.0.0",
-    "capacitor-mdns-discovery": "^0.0.4",
+    "capacitor-mdns-discovery": "^0.0.6",
     "chart.js": "^4.5.1",
     "ionicons": "^7.0.0",
     "onesignal-cordova-plugin": "^5.3.1",

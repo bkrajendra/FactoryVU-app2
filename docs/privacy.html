@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FactoryVU Privacy Policy</title>
+    <style>
+      :root {
+        --bg: #f6f8fb;
+        --text: #0f172a;
+        --muted: rgba(15, 23, 42, 0.62);
+        --card: rgba(255, 255, 255, 0.82);
+        --stroke: rgba(15, 23, 42, 0.10);
+        --primary: #0ea5a8;
+        --shadow: 0 12px 34px rgba(15, 23, 42, 0.10);
+        --radius: 18px;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial;
+        color: var(--text);
+        background:
+          radial-gradient(1000px 520px at 12% -10%, rgba(14, 165, 168, 0.18), transparent 58%),
+          radial-gradient(900px 520px at 95% 0%, rgba(79, 70, 229, 0.10), transparent 55%),
+          linear-gradient(180deg, var(--bg) 0%, #f2f6ff 100%);
+        min-height: 100vh;
+        padding: 28px 16px;
+      }
+      .wrap { max-width: 900px; margin: 0 auto; }
+      header {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 16px;
+      }
+      h1 { font-size: 28px; margin: 0; letter-spacing: -0.3px; }
+      .back a { color: var(--muted); text-decoration: none; }
+      .back a:hover { color: var(--primary); }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--stroke);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 18px;
+      }
+      h2 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.8px; color: rgba(15, 23, 42, 0.55); margin: 18px 0 8px; }
+      h2:first-of-type { margin-top: 0; }
+      p { margin: 0 0 10px; color: var(--muted); line-height: 1.6; }
+      ul { margin: 0; padding-left: 18px; color: var(--muted); }
+      li { margin: 6px 0; }
+      .meta { font-size: 12px; color: rgba(15, 23, 42, 0.50); margin-top: 10px; }
+      code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        font-size: 12px;
+        background: rgba(15, 23, 42, 0.06);
+        padding: 2px 6px;
+        border-radius: 8px;
+        border: 1px solid rgba(15, 23, 42, 0.08);
+      }
+      a { color: var(--primary); text-decoration: none; }
+      a:hover { text-decoration: underline; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <h1>Privacy Policy</h1>
+        <div class="back"><a href="./index.html">← Back</a></div>
+      </header>
+
+      <main class="card">
+        <p class="meta">Last updated: 2026-04-26</p>
+
+        <h2>Overview</h2>
+        <p>
+          FactoryVU (“the app”) helps you monitor and manage industrial IoT sensors and devices. This policy explains what data the app
+          processes and how it is used.
+        </p>
+
+        <h2>Data we collect</h2>
+        <ul>
+          <li><strong>API key (stored on-device):</strong> The app stores your API key locally on your device to authenticate requests to your cloud endpoint.</li>
+          <li><strong>Device data you view:</strong> Sensor readings (e.g., temperature/humidity) and device identifiers returned by your configured API endpoint.</li>
+          <li><strong>Local network discovery metadata:</strong> If you use local discovery, the app may discover devices/services on your local network using Bonjour/mDNS (e.g., service name/type, host, port, and TXT records).</li>
+        </ul>
+
+        <h2>Data we do not sell</h2>
+        <p>
+          We do not sell your personal information.
+        </p>
+
+        <h2>How we use data</h2>
+        <ul>
+          <li>To authenticate to your configured cloud API using your API key</li>
+          <li>To load and display your devices and sensor readings</li>
+          <li>To discover devices available on your local network (if enabled by you)</li>
+        </ul>
+
+        <h2>Where data is stored</h2>
+        <ul>
+          <li><strong>On your device:</strong> Your API key and app settings are stored locally (e.g., in local storage).</li>
+          <li><strong>Cloud API:</strong> Device data is retrieved from the API endpoint configured by the app.</li>
+        </ul>
+
+        <h2>Permissions</h2>
+        <p>
+          The app may request access to your <strong>Local Network</strong> to discover devices via Bonjour/mDNS. You can allow or deny this permission at any time in iOS Settings.
+        </p>
+
+        <h2>Third-party services</h2>
+        <p>
+          If the app integrates third-party services (for example, push notification providers), those services may process data according to their own privacy policies.
+        </p>
+
+        <h2>Contact</h2>
+        <p>
+          If you have questions about this policy, contact <a href="mailto:hello@rajendrakhope.com?subject=FactoryVU%20Privacy%20Policy">hello@rajendrakhope.com</a>.
+        </p>
+
+        <p class="meta">
+          Note: This page is provided as general information. If you need legal review, consult a qualified professional.
+        </p>
+      </main>
+    </div>
+  </body>
+</html>

@@ -34,4 +34,30 @@
 
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@import '@ionic/angular/css/palettes/dark.system.css';
+/* Keep the app light + minimalistic (no dark palette). */
+/* @import '@ionic/angular/css/palettes/dark.system.css'; */
+
+/* -------------------------------------------------------------------------- */
+/* Global app chrome (header / tabs)                                           */
+/* -------------------------------------------------------------------------- */
+
+ion-header {
+  --background: transparent;
+  backdrop-filter: blur(10px);
+}
+
+ion-toolbar {
+  --background: var(--ion-toolbar-background);
+  --border-color: rgba(var(--ion-text-color-rgb), 0.08);
+  --color: var(--ion-text-color);
+}
+
+ion-title {
+  font-weight: 800;
+  letter-spacing: -0.2px;
+}
+
+ion-tab-bar {
+  --background: var(--ion-tab-bar-background);
+  --border: rgba(var(--ion-text-color-rgb), 0.10);
+}
