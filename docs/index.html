@@ -307,7 +307,7 @@
 
       </div>
 
-      <p class="version">V1.0</p>
+      <p class="version" id="app-version">V1.0</p>
     </div>
 
     <footer>
@@ -319,5 +319,28 @@
       </div>
     </footer>
   </div>
+  <script>
+    (function () {
+      const el = document.getElementById('app-version');
+      if (!el) return;
+
+      // Derive the displayed version from the OTA manifest (kept up-to-date by CI).
+      // This avoids hardcoding and works on simple static hosting.
+      fetch('./ios/manifest.plist', { cache: 'no-store' })
+        .then(r => (r.ok ? r.text() : Promise.reject(new Error('manifest not found'))))
+        .then(xmlText => {
+          const doc = new DOMParser().parseFromString(xmlText, 'application/xml');
+          const keys = Array.from(doc.getElementsByTagName('key'));
+          const k = keys.find(n => n.textContent === 'bundle-version');
+          const v = k && k.nextElementSibling && k.nextElementSibling.tagName === 'string'
+            ? (k.nextElementSibling.textContent || '').trim()
+            : '';
+          if (v) el.textContent = 'V' + v;
+        })
+        .catch(() => {
+          // Keep the fallback text if manifest is unavailable.
+        });
+    })();
+  </script>
 </body>
 </html>

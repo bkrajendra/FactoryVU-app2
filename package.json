@@ -1,6 +1,6 @@
 {
   "name": "FactoryVU",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "author": "Rajendra Khope",
   "homepage": "https://iocare.in/",
   "scripts": {
@@ -11,6 +11,8 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint",
+    "sync:versions": "node scripts/sync-native-versions.mjs",
+    "postinstall": "node scripts/sync-native-versions.mjs",
     "dbuild": "docker run --network host -it --rm -v '$(pwd -W)':/workdir -v /workdir/node_modules bkrajendra/ionic-builder:ionic-8 utils build",
     "deploy": "wrangler deploy",
     "preview": "wrangler dev"
