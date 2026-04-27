@@ -15,13 +15,16 @@
   <string>export</string>
 
   <key>signingStyle</key>
-  <string>automatic</string>
+  <string>manual</string>
 
-  <!-- Optional: if you want to force a team, set your Team ID -->
-  <!--
   <key>teamID</key>
-  <string>REPLACE_TEAM_ID</string>
-  -->
+  <string>3KA57X722P</string>
+
+  <key>provisioningProfiles</key>
+  <dict>
+    <key>com.rajendrakhope.factoryvu2</key>
+    <string>FacoryVU-Download</string>
+  </dict>
 </dict>
 </plist>
 

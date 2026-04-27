@@ -2,12 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-  <!-- Internal distribution:
-       - Set method to "ad-hoc" for Ad Hoc distribution
-       - If using Enterprise Program, change method to "enterprise"
-  -->
+  <!-- Internal distribution (Ad Hoc).
+       Xcode 16.4 deprecates "ad-hoc" in favor of "release-testing". -->
   <key>method</key>
-  <string>ad-hoc</string>
+  <string>release-testing</string>
 
   <key>compileBitcode</key>
   <false/>
@@ -18,16 +16,17 @@
   <key>destination</key>
   <string>export</string>
 
-  <!-- Leave signingStyle as automatic if your profile matches the bundle id.
-       If you use manual signing in CI, set "manual" and provide more keys. -->
   <key>signingStyle</key>
-  <string>automatic</string>
+  <string>manual</string>
 
-  <!-- Optional: if you want to force a team, set your Team ID -->
-  <!--
   <key>teamID</key>
-  <string>REPLACE_TEAM_ID</string>
-  -->
+  <string>3KA57X722P</string>
+
+  <key>provisioningProfiles</key>
+  <dict>
+    <key>com.rajendrakhope.factoryvu2</key>
+    <string>FacoryVU-Download</string>
+  </dict>
 </dict>
 </plist>
 
