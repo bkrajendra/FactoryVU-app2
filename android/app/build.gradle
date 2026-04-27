@@ -10,8 +10,13 @@ android {
         applicationId "io.ionic.starter"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        // CI-friendly versioning:
+        // - Provide -PVERSION_CODE=123 and -PVERSION_NAME=1.2.3+123 from GitHub Actions.
+        // - Falls back to current values for local builds.
+        def vc = project.findProperty("VERSION_CODE")?.toString()
+        def vn = project.findProperty("VERSION_NAME")?.toString()
+        versionCode (vc ? vc.toInteger() : 1)
+        versionName (vn ?: "1.0")
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
