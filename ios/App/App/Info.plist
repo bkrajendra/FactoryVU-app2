@@ -31,6 +31,8 @@
 	</array>
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>Discover devices on the local network.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>FactoryVU may use location access to support device discovery, linking and operational alerts. Location is not required for basic cloud monitoring.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
