@@ -34,6 +34,11 @@ export class AppComponent {
     // Initialize with your OneSignal App ID
     OneSignal.initialize('df0fda53-9ba1-4cf1-89c1-a1f4c6a8934c');
 
+    // On iOS, notifications won't arrive until the user grants permission.
+    // If you rely on an In-App Message prompt, ensure it is configured in OneSignal.
+    // This call is safe to make; iOS will only prompt when appropriate.
+    OneSignal.Notifications.requestPermission(true);
+
     // Use an In-App Message configured in the OneSignal dashboard
     // to show the native push permission prompt.
     OneSignal.InAppMessages.addTrigger('ask_push_permission', 'true');
