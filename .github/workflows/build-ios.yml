@@ -1,0 +1,226 @@
+name: Build iOS IPA (Internal + App Store)
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: "Build profile"
+        type: choice
+        options:
+          - internal
+          - appstore
+        default: internal
+
+env:
+  NODE_VERSION: "22"
+  IOS_WORKSPACE: "ios/App/App.xcworkspace"
+  IOS_SCHEME: "App"
+  IOS_CONFIGURATION: "Release"
+
+jobs:
+  build-ios:
+    runs-on: macos-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Compute build versions
+        id: buildver
+        shell: bash
+        run: |
+          PKG_VERSION="$(node -p "require('./package.json').version")"
+          BUILD_NUMBER="${GITHUB_RUN_NUMBER}"
+          echo "PKG_VERSION=${PKG_VERSION}" >> "$GITHUB_OUTPUT"
+          echo "BUILD_NUMBER=${BUILD_NUMBER}" >> "$GITHUB_OUTPUT"
+
+      - name: Build web app
+        run: npm run build -- --configuration=production
+
+      - name: Sync Capacitor iOS
+        run: npx cap sync ios
+
+      - name: Install CocoaPods
+        run: sudo gem install cocoapods -N
+
+      - name: Pod install
+        working-directory: ios/App
+        run: pod install --repo-update
+
+      # ------------------------------------------------------------------
+      # Signing setup (required for IPA export)
+      # ------------------------------------------------------------------
+      - name: Import signing certificate and provisioning profile
+        if: ${{ github.event_name == 'workflow_dispatch' || github.ref_name == 'main' || github.ref_name == 'master' }}
+        shell: bash
+        env:
+          IOS_CERT_P12_BASE64: ${{ secrets.IOS_CERT_P12_BASE64 }}
+          IOS_CERT_PASSWORD: ${{ secrets.IOS_CERT_PASSWORD }}
+          IOS_PROFILE_BASE64_INTERNAL: ${{ secrets.IOS_PROFILE_BASE64_INTERNAL }}
+          IOS_PROFILE_BASE64_APPSTORE: ${{ secrets.IOS_PROFILE_BASE64_APPSTORE }}
+        run: |
+          set -euo pipefail
+          if [ -z "${IOS_CERT_P12_BASE64:-}" ] || [ -z "${IOS_CERT_PASSWORD:-}" ]; then
+            echo "Missing iOS signing secrets (IOS_CERT_P12_BASE64 / IOS_CERT_PASSWORD)." >&2
+            exit 1
+          fi
+
+          PROFILE="${{ github.event.inputs.profile }}"
+          if [ -z "${PROFILE}" ]; then PROFILE="internal"; fi
+
+          if [ "${PROFILE}" = "internal" ]; then
+            if [ -z "${IOS_PROFILE_BASE64_INTERNAL:-}" ]; then
+              echo "Missing IOS_PROFILE_BASE64_INTERNAL for internal build." >&2
+              exit 1
+            fi
+            PROFILE_B64="${IOS_PROFILE_BASE64_INTERNAL}"
+          else
+            if [ -z "${IOS_PROFILE_BASE64_APPSTORE:-}" ]; then
+              echo "Missing IOS_PROFILE_BASE64_APPSTORE for appstore build." >&2
+              exit 1
+            fi
+            PROFILE_B64="${IOS_PROFILE_BASE64_APPSTORE}"
+          fi
+
+          KEYCHAIN_PATH="$RUNNER_TEMP/build.keychain-db"
+          KEYCHAIN_PASSWORD="$(uuidgen)"
+
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security list-keychains -d user -s "$KEYCHAIN_PATH"
+
+          echo "$IOS_CERT_P12_BASE64" | base64 --decode > "$RUNNER_TEMP/cert.p12"
+          security import "$RUNNER_TEMP/cert.p12" -k "$KEYCHAIN_PATH" -P "$IOS_CERT_PASSWORD" -T /usr/bin/codesign -T /usr/bin/security
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+
+          mkdir -p "$HOME/Library/MobileDevice/Provisioning Profiles"
+          PP_PATH="$HOME/Library/MobileDevice/Provisioning Profiles/profile.mobileprovision"
+          echo "$PROFILE_B64" | base64 --decode > "$PP_PATH"
+
+      # ------------------------------------------------------------------
+      # Build + archive
+      # ------------------------------------------------------------------
+      - name: Archive (xcodebuild)
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/build"
+          xcodebuild \
+            -workspace "${{ env.IOS_WORKSPACE }}" \
+            -scheme "${{ env.IOS_SCHEME }}" \
+            -configuration "${{ env.IOS_CONFIGURATION }}" \
+            -sdk iphoneos \
+            -archivePath "$RUNNER_TEMP/build/App.xcarchive" \
+            MARKETING_VERSION="${{ steps.buildver.outputs.PKG_VERSION }}" \
+            CURRENT_PROJECT_VERSION="${{ steps.buildver.outputs.BUILD_NUMBER }}" \
+            clean archive
+
+      - name: Export IPA
+        id: export
+        shell: bash
+        run: |
+          set -euo pipefail
+          PROFILE="${{ github.event.inputs.profile }}"
+          if [ -z "${PROFILE}" ]; then PROFILE="internal"; fi
+
+          if [ "${PROFILE}" = "internal" ]; then
+            EXPORT_OPTS=".github/ios/ExportOptions-internal.plist"
+          else
+            EXPORT_OPTS=".github/ios/ExportOptions-appstore.plist"
+          fi
+
+          mkdir -p "$RUNNER_TEMP/build/export"
+          xcodebuild -exportArchive \
+            -archivePath "$RUNNER_TEMP/build/App.xcarchive" \
+            -exportOptionsPlist "$EXPORT_OPTS" \
+            -exportPath "$RUNNER_TEMP/build/export"
+
+          IPA_PATH="$(ls -1 "$RUNNER_TEMP/build/export"/*.ipa | head -1)"
+          # Normalize the IPA name for stable OTA URLs.
+          IPA_ASSET_PATH="$RUNNER_TEMP/build/export/App.ipa"
+          cp "$IPA_PATH" "$IPA_ASSET_PATH"
+
+          echo "IPA_PATH=$IPA_PATH" >> "$GITHUB_OUTPUT"
+          echo "IPA_ASSET_PATH=$IPA_ASSET_PATH" >> "$GITHUB_OUTPUT"
+          echo "PROFILE=$PROFILE" >> "$GITHUB_OUTPUT"
+
+      # Internal distribution: place IPA into docs path (for server hosting).
+      - name: Copy IPA into docs folder (internal)
+        if: ${{ (github.event.inputs.profile || 'internal') == 'internal' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "docs/ios/app"
+          cp "${{ steps.export.outputs.IPA_ASSET_PATH }}" "docs/ios/app/App.ipa"
+
+      - name: Create GitHub Release (internal)
+        if: ${{ (github.event.inputs.profile || 'internal') == 'internal' }}
+        id: ghrel
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ios-${{ steps.buildver.outputs.PKG_VERSION }}-${{ steps.buildver.outputs.BUILD_NUMBER }}
+          name: iOS Internal ${{ steps.buildver.outputs.PKG_VERSION }} (${{ steps.buildver.outputs.BUILD_NUMBER }})
+          prerelease: true
+          files: |
+            ${{ steps.export.outputs.IPA_ASSET_PATH }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update OTA manifest to point to Release IPA (internal)
+        if: ${{ (github.event.inputs.profile || 'internal') == 'internal' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG="ios-${{ steps.buildver.outputs.PKG_VERSION }}-${{ steps.buildver.outputs.BUILD_NUMBER }}"
+          # Use the stable "releases/download" URL for OTA manifest.
+          IPA_URL="https://github.com/${GITHUB_REPOSITORY}/releases/download/${TAG}/App.ipa"
+          python3 - <<'PY'
+          import os, pathlib
+          p = pathlib.Path("docs/ios/manifest.plist")
+          s = p.read_text(encoding="utf-8")
+          s = s.replace("__IPA_URL__", os.environ["IPA_URL"])
+          s = s.replace("__BUNDLE_VERSION__", os.environ["BUNDLE_VERSION"])
+          p.write_text(s, encoding="utf-8")
+          print("Updated", p)
+          PY
+        env:
+          IPA_URL: ${{ format('https://github.com/{0}/releases/download/ios-{1}-{2}/App.ipa', github.repository, steps.buildver.outputs.PKG_VERSION, steps.buildver.outputs.BUILD_NUMBER) }}
+          BUNDLE_VERSION: ${{ steps.buildver.outputs.PKG_VERSION }}
+
+      - name: Commit updated manifest (internal)
+        if: ${{ github.event_name == 'push' && (github.event.inputs.profile || 'internal') == 'internal' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git status --porcelain
+          git add docs/ios/manifest.plist
+          if git diff --cached --quiet; then
+            echo "No manifest changes to commit."
+            exit 0
+          fi
+          git commit -m "chore(docs): update iOS OTA manifest"
+          git push
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-ipa-${{ github.event.inputs.profile || 'internal' }}
+          path: |
+            ${{ steps.export.outputs.IPA_ASSET_PATH }}
+            docs/ios/app/App.ipa
+
