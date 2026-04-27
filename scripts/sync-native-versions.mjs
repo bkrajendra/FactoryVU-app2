@@ -17,9 +17,7 @@ function writeIfChanged(p, next) {
 
 function replaceAll(str, re, replacement) {
   const next = str.replace(re, replacement);
-  if (next === str) {
-    throw new Error(`Pattern not found: ${re}`);
-  }
+  // Don't hard-fail in CI if a file changed format; callers can detect no-op.
   return next;
 }
 
@@ -52,8 +50,16 @@ const gradlePath = path.join(root, 'android', 'app', 'build.gradle');
 if (fs.existsSync(gradlePath)) {
   const g = fs.readFileSync(gradlePath, 'utf8');
   // Keep CI override support; just make the local fallback match package.json.
-  const next = replaceAll(
-    g,
+  let next = g;
+  // Pattern A: versionName (vn ?: "1.0")
+  next = replaceAll(
+    next,
+    /versionName\s*\(\s*vn\s*\?:\s*"[^"]*"\s*\)/,
+    `versionName (vn ?: "${version}")`,
+  );
+  // Pattern B (older): versionName (vn ? vn.toString() : "1.0")
+  next = replaceAll(
+    next,
     /versionName\s*\(\s*vn\s*\?\s*vn\.toString\(\)\s*:\s*"[^"]*"\s*\)/,
     `versionName (vn ? vn.toString() : "${version}")`,
   );

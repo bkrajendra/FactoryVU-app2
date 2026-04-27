@@ -16,7 +16,7 @@ android {
         def vc = project.findProperty("VERSION_CODE")?.toString()
         def vn = project.findProperty("VERSION_NAME")?.toString()
         versionCode (vc ? vc.toInteger() : 1)
-        versionName (vn ?: "1.0")
+        versionName (vn ?: "2.0.6")
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
