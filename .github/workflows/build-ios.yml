@@ -121,6 +121,12 @@ jobs:
           echo "TEAM_ID=$TEAM_ID" >> "$GITHUB_ENV"
           echo "PROFILE_NAME=$PROFILE_NAME" >> "$GITHUB_ENV"
 
+      - name: Verify installed signing identities
+        shell: bash
+        run: |
+          set -euo pipefail
+          security find-identity -p codesigning -v || true
+
       # ------------------------------------------------------------------
       # Build + archive
       # ------------------------------------------------------------------
@@ -139,6 +145,7 @@ jobs:
             MARKETING_VERSION="${{ steps.buildver.outputs.PKG_VERSION }}" \
             CURRENT_PROJECT_VERSION="${{ steps.buildver.outputs.BUILD_NUMBER }}" \
             DEVELOPMENT_TEAM="${TEAM_ID}" \
+            CODE_SIGN_IDENTITY="Apple Distribution" \
             clean archive
 
       - name: Export IPA
