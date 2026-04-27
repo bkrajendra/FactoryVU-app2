@@ -1,7 +1,10 @@
-name: Build Android Release
+name: Build Android
 
-events:
+on:
   push:
+    branches:
+      - main
+  pull_request:
     branches:
       - main
 
@@ -9,47 +12,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@v2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
+      - name: Set up JDK
+        uses: actions/setup-java@v1
         with:
-          node-version: '14'
+          java-version: '11'
 
-      - name: Install dependencies
-        run: npm install
-
-      - name: Get version from package.json
-        id: get_version
-        run: |
-          VERSION=$(node -p "require('./package.json').version")
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
-
-      - name: Build APK
-        run: ./gradlew assembleDebug
-
-      - name: Build AAB
-        run: ./gradlew bundleRelease
-
-      - name: Check if version changed
-        id: check_version
-        run: |
-          LATEST_RELEASE=$(curl --silent "https://api.github.com/repos/${{ github.repository }}/releases/latest")
-          CURRENT_VERSION=$(echo ${{ env.VERSION }})
-          echo "LATEST_VERSION=$(echo $LATEST_RELEASE | jq -r '.tag_name')" >> $GITHUB_ENV
-          if [[ $CURRENT_VERSION != $LATEST_VERSION ]]; then
-            echo "::set-output name=new_release::true"
-          else
-            echo "::set-output name=new_release::false"
-          fi
-
-      - name: Create Release
-        if: steps.check_version.outputs.new_release == 'true'
-        run: |
-          gh release create "v${{ env.VERSION }}" app/build/outputs/apk/debug/app-debug.apk app/build/outputs/bundle/release/app-release.aab --title "Release v${{ env.VERSION }}" --notes "New version ${VERSION}"
-
-      - name: Update Release
-        if: steps.check_version.outputs.new_release == 'false'
-        run: |
-          gh release upload "v${{ env.VERSION }}" app/build/outputs/apk/debug/app-debug.apk app/build/outputs/bundle/release/app-release.aab --clobber
+      - name: Build with Gradle
+        run: ./gradlew build
