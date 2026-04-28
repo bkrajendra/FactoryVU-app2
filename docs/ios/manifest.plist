@@ -11,7 +11,7 @@
             <key>kind</key>
             <string>software-package</string>
             <key>url</key>
-            <string>__IPA_URL__</string>
+            <string>https://github.com/bkrajendra/FactoryVU-app2/releases/download/ios-2.0.6-8/App.ipa</string>
           </dict>
           <dict>
             <key>kind</key>
@@ -35,7 +35,7 @@
           <key>bundle-identifier</key>
           <string>com.rajendrakhope.factoryvu2</string>
           <key>bundle-version</key>
-          <string>__BUNDLE_VERSION__</string>
+          <string>2.0.6</string>
           <key>kind</key>
           <string>software</string>
           <key>title</key>
