@@ -171,7 +171,9 @@ jobs:
           IPA_PATH="$(ls -1 "$RUNNER_TEMP/build/export"/*.ipa | head -1)"
           # Normalize the IPA name for stable OTA URLs.
           IPA_ASSET_PATH="$RUNNER_TEMP/build/export/App.ipa"
-          cp "$IPA_PATH" "$IPA_ASSET_PATH"
+          if [ "$IPA_PATH" != "$IPA_ASSET_PATH" ]; then
+            cp "$IPA_PATH" "$IPA_ASSET_PATH"
+          fi
 
           echo "IPA_PATH=$IPA_PATH" >> "$GITHUB_OUTPUT"
           echo "IPA_ASSET_PATH=$IPA_ASSET_PATH" >> "$GITHUB_OUTPUT"
