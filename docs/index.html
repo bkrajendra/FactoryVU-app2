@@ -329,13 +329,17 @@
       fetch('./ios/manifest.plist', { cache: 'no-store' })
         .then(r => (r.ok ? r.text() : Promise.reject(new Error('manifest not found'))))
         .then(xmlText => {
+          // console.log(xmlText);
           const doc = new DOMParser().parseFromString(xmlText, 'application/xml');
           const keys = Array.from(doc.getElementsByTagName('key'));
+          console.log(keys);
           const k = keys.find(n => n.textContent === 'bundle-version');
+          console.log(k);
           const v = k && k.nextElementSibling && k.nextElementSibling.tagName === 'string'
             ? (k.nextElementSibling.textContent || '').trim()
             : '';
           if (v) el.textContent = 'V' + v;
+          console.log(v);
         })
         .catch(() => {
           // Keep the fallback text if manifest is unavailable.
